@@ -9,41 +9,14 @@ import string
 # string.ascii_letters is ascii_lowercase + ascii_uppercase
 # string.printable is digits + ascii_letters + punctuation + whitespace
 
-hexi = []
-for letter in string.hexdigits:
-    if letter.lower() in hexi:
-        pass
-    else:
-        hexi.append(letter)
 
+def get_base(base):
+    count = "0"
+    chars = string.digits + string.ascii_lowercase
 
-def bin_to_base10(number):
-    number = int(number)
-    power = 0
-    decimal = 0
-    while number > 0:
-        decimal += 2 ** power * (number % 10)
-        number //= 10
-        power += 1
-    return decimal
-
-
-def get_digit(number):
-
-    for x in range(len(hexi)):
-        if number == hexi[x]:
-            print(x)
-            return x
-
-
-def hex_to_base10(number):
-
-    decimal = 0
-    power = 0
-    for digit in range(len(number), 0, -1):
-        decimal = decimal + 16 ** power * get_digit(number[digit-1])
-        power += 1
-    return decimal
+    for i in range(base-1):
+        count += chars[i+1]
+    return count
 
 
 def decode(digits, base):
@@ -57,34 +30,15 @@ def decode(digits, base):
     # TODO: Decode digits from binary (base 2)
     # ...
 
-    if base == 2:
-        return bin_to_base10(digits)
-
-    # TODO: Decode digits from hexadecimal (base 16)
-    # ...
-    if base == 16:
-        return hex_to_base10(digits)
-        # makes list of hexidecimal values
-
-
-def base10_to_binary(number):
-    binary = 0
+    decode = 0
+    base_range = get_base(base)
     power = 0
-    while number > 0:
-        binary += 10 ** power * (number % 2)
-        number //= 2
+    for digit in digits[::-1]:
+        for i in range(len(base_range)):
+            if digit == base_range[i]:
+                decode += (base**power) * i
         power += 1
-    return binary
-
-
-def base10_to_hex(number):
-    hexi = 0
-    power = 0
-    hex_mod = number % 4
-    while number > 0:
-        if hex_mod != 0:
-            dif = 4 - hex_mod
-        for i in dif:
+    return decode
 
 
 def encode(number, base):
@@ -96,16 +50,14 @@ def encode(number, base):
     assert 2 <= base <= 36, 'base is out of range: {}'.format(base)
     # Handle unsigned numbers only for now
     assert number >= 0, 'number is negative: {}'.format(number)
-    # TODO: Encode number in binary (base 2)
-    # ...
-    if base == 2:
-        return base10_to_binary(number)
-    # TODO: Encode number in hexadecimal (base 16)
-    # ...
-    if base == 16:
-        return base10_to_hex(number)
-    # TODO: Encode number in any base (2 up to 36)
-    # ...
+    curr_base = get_base(base)
+    sol = ""
+    while True:
+        remainder = number % base
+        number = number // base
+        sol += curr_base[remainder]
+        if number == 0:
+            return sol[::1]
 
 
 def convert(digits, base1, base2):
@@ -119,15 +71,14 @@ def convert(digits, base1, base2):
     assert 2 <= base2 <= 36, 'base2 is out of range: {}'.format(base2)
     # TODO: Convert digits from base 2 to base 16 (and vice versa)
     # ...
-    if base1 == 2 and base2 == 16:
-        base = bin_to_base10(digits)
-        base10_to_hex(base)
-    # TODO: Convert digits from base 2 to base 10 (and vice versa)
-    # ...
-    # TODO: Convert digits from base 10 to base 16 (and vice versa)
-    # ...
-    # TODO: Convert digits from any base to any base (2 up to 36)
-    # ...
+    if base1 == 10:
+        sol = encode(int(digits), base2)
+    elif base2 == 10:
+        sol = decode(digits, base1)
+    else:
+        base10 = decode(digits, base1)
+        sol = encode(int(base10), base2)
+    return sol
 
 
 def main():
@@ -152,8 +103,10 @@ def test():
     print(decode('10101', 16))
     print(encode(21, 2))
     print(encode(10101, 16))
+    print(convert("10101", 16, 10))
+    print(convert("10101", 2, 10))
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     test()
