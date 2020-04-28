@@ -19,12 +19,32 @@ def is_palindrome(text):
 
 def is_palindrome_iterative(text):
     # TODO: implement the is_palindrome function iteratively here
+    first = 0
+    last = len(text)-1
+    for letter in text:
+        if letter == text[last]:
+            first += 1
+            last -= 1
+        else:
+            return False
+    return True
+
     pass
     # once implemented, change is_palindrome to call is_palindrome_iterative
     # to verify that your iterative implementation passes all tests
 
 
 def is_palindrome_recursive(text, left=None, right=None):
+    if left is None:
+        left = 0
+        right = len(text)-1
+    if text[left] == text[right] and left != len(text)-1:
+        left += 1
+        right -= 1
+        is_palindrome_recursive(text, left, right)
+    else:
+        return False
+    return True
     # TODO: implement the is_palindrome function recursively here
     pass
     # once implemented, change is_palindrome to call is_palindrome_recursive
@@ -45,5 +65,11 @@ def main():
         print('  checks if each argument given is a palindrome')
 
 
+def test():
+    print(is_palindrome_iterative("mom"))
+    print(is_palindrome_recursive('mom'))
+
+
 if __name__ == '__main__':
+    test()
     main()
