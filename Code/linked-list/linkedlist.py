@@ -1,5 +1,6 @@
 #!python
 
+
 class Node(object):
 
     def __init__(self, data):
@@ -22,6 +23,7 @@ class LinkedList(object):
         # Append the given items
         if iterable is not None:
             for item in iterable:
+                self.size += 1
                 self.append(item)
 
     def __str__(self):
@@ -56,7 +58,7 @@ class LinkedList(object):
 
     def length(self):
         """Return the length of this linked list by traversing its nodes.
-        Best and worst case running time: ??? under what conditions? [TODO]"""
+        Best and worst case running time: ??? under what conditions? [O(1) Best, O(n) worst]"""
         # Node counter initialized to zero
         node_count = 0
         # Start at the head node
@@ -73,12 +75,13 @@ class LinkedList(object):
     def get_at_index(self, index):
         """Return the item at the given index in this linked list, or
         raise ValueError if the given index is out of range of the list size.
-        Best case running time: ??? under what conditions? [TODO]
-        Worst case running time: ??? under what conditions? [TODO]"""
+        Best case running time: ??? under what conditions? O(1)
+        Worst case running time: ??? under what conditions? O(n)"""
         # Check if the given index is out of range and if so raise an error
         if not (0 <= index < self.size):
             raise ValueError('List index out of range: {}'.format(index))
         # TODO: Find the node at the given index and return its data
+        return self.items()[index]
 
     def insert_at_index(self, index, item):
         """Insert the given item at the given index in this linked list, or
@@ -104,6 +107,7 @@ class LinkedList(object):
             self.tail.next = new_node
         # Update tail to new node regardless
         self.tail = new_node
+        self.size += 1
 
     def prepend(self, item):
         """Insert the given item at the head of this linked list.
@@ -193,11 +197,12 @@ class LinkedList(object):
             # Otherwise raise an error to tell the user that delete has failed
             raise ValueError('Item not found: {}'.format(item))
 
+        self.size = self.length()
+
 
 def test_linked_list():
     ll = LinkedList()
     print(ll)
-
     print('Appending items:')
     ll.append('A')
     print(ll)
