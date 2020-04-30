@@ -29,6 +29,8 @@ class HashTable(object):
         # TODO: Calculate load factor
         # return ...
 
+        return self.length()/len(self.buckets)
+
     def keys(self):
         """Return a list of all keys in this hash table.
         Best and worst case running time: ??? under what conditions? [TODO]"""
@@ -115,8 +117,12 @@ class HashTable(object):
         bucket.append((key, value))
         # TODO: Check if the load factor exceeds a threshold such as 0.75
         # ...
-        # TODO: If so, automatically resize to reduce the load factor
-        # ...
+        self.size += 1
+        if self.load_factor() >= .75:
+            self._resize()
+            pass
+            # TODO: If so, automatically resize to reduce the load factor
+            # ...
 
     def delete(self, key):
         """Delete the given key and its associated value, or raise KeyError.
@@ -147,6 +153,13 @@ class HashTable(object):
             new_size = len(self.buckets) / 2  # Half size
         # TODO: Get a list to temporarily hold all current key-value entries
         # ...
+        items = self.items()
+        self.size = 0
+        for i in range(new_size):
+            self.buckets.append(LinkedList())
+        while len(items) != 0:
+            item = items.pop()
+            self.set(item[0], item[1])
         # TODO: Create a new list of new_size total empty linked list buckets
         # ...
         # TODO: Insert each key-value entry into the new list of buckets,
