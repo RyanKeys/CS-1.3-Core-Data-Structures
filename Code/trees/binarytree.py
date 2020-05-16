@@ -75,7 +75,7 @@ class BinarySearchTree(object):
         TODO: Best case running time: ??? under what conditions?
         TODO: Worst case running time: ??? under what conditions?"""
         # Find a node with the given item, if any
-        node = self._find_node_recursive(item, self.root)
+        node = self._find_node_iterative(item)
         # Return True if a node was found, or False
         return node is not None
 
@@ -85,11 +85,10 @@ class BinarySearchTree(object):
         TODO: Best case running time: ??? under what conditions?
         TODO: Worst case running time: ??? under what conditions?"""
         # Find a node with the given item, if any
-        node = self._find_node_iterative(item)
+
         # TODO: Return the node's data if found, or None
-        if node is not None:
-            return node.data
-        return None
+        node = self._find_node_iterative(item)
+        return node
 
     def insert(self, item):
         """Insert the given item in order into this binary search tree.
@@ -103,7 +102,13 @@ class BinarySearchTree(object):
             self.size += 1
             return
         # Find the parent node of where the given item should be inserted
-
+        parent = self._find_parent_node_iterative(item)
+        if parent is not None and self._find_node_iterative(item) is None:
+            if parent.data > item:
+                parent.left = BinaryTreeNode(item)
+            else:
+                parent.right = BinaryTreeNode(item)
+                self.size += 1
         # TODO: Create a new node and set the parent's left child
         # TODO: Check if the given item should be inserted right of parent node
         # TODO: Create a new node and set the parent's right child
@@ -141,6 +146,8 @@ class BinarySearchTree(object):
         TODO: Best case running time: ??? under what conditions?
         TODO: Worst case running time: ??? under what conditions?"""
         # Check if starting node exists
+        if node == "null":
+            node = self.root
         if node is None:
             # Not found (base case)
             return None
@@ -278,6 +285,8 @@ class BinarySearchTree(object):
         if node.left is not None:
             self._traverse_in_order_recursive(node.left, visit)
         # TODO: Visit this node's data with given function
+        visit(node.data)
+
         # TODO: Traverse right subtree, if it exists
         if node.right is not None:
             self._traverse_in_order_recursive(node.right, visit)
